@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <title>Feliz Aniversario Mi Amor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            min-height: 100vh;
+            overflow: auto;
+            position: relative;
+        }
+        
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff3366'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center;
+            opacity: 0;
+            animation: fall 5s linear infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1000px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 40px auto;
+        }
+        
+        h1 {
+            color: #ff3366;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .photo-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 200px;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .photo-item img {
+            width: 60%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .countdown {
+            background-color: #ff3366;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .countdown-numbers {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+        
+        .countdown-item {
+            text-align: center;
+        }
+        
+        .countdown-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .love-letter {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            position: relative;
+        }
+        
+        .love-letter:before {
+            content: '"';
+            font-size: 5rem;
+            color: #ff3366;
+            opacity: 0.2;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+            text-align: center;
+        }
+        
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        
+        .puzzle-piece {
+            width: 100%;
+            height: 100px;
+            background-size: 300px 300px;
+            cursor: pointer;
+            border: 2px solid white;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .puzzle-piece:hover {
+            transform: scale(1.05);
+        }
+        
+        .empty-piece {
+            background-color: #f0f0f0;
+            border: 2px dashed #ccc;
+            cursor: not-allowed;
+        }
+        
+        button {
+            background-color: #ff3366;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        button:hover {
+            background-color: #ff1a55;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hidden-content {
+            display: none;
+        }
+        
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ff3366;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+        
+        .memory-game {
+            display: none;
+            margin: 30px 0;
+        }
+        
+        .memory-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .memory-card {
+            height: 200px;
+            background-color: #ff3366;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            background-size: cover;
+            
+        }
+        
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .memory-card.matched {
+            opacity: 0.5;
+            cursor: default;
+        }
+        
+        .memory-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            font-size: 1.2rem;
+        }
+        
+        .additional-content {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .timeline {
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background-color: #ff3366;
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            width: 50%;
+            padding: 0 40px;
+            box-sizing: border-box;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .puzzle-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .puzzle-piece {
+                height: 80px;
+            }
+            
+            .timeline:before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 50px;
+                padding-right: 0;
+            }
+            
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                left: 0;
+                text-align: left;
+            }
+            
+            .memory-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container" id="hearts"></div>
+    
+    <div class="music-btn" onclick="toggleMusic()">♪</div>
+    
+    <!-- Audio para la música de fondo -->
+    <audio id="background-music" loop>
+        <source src="TEAMO.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    
+    <div class="modal" id="puzzle-modal">
+        <div class="modal-content">
+            <h2>¡Resuelve nuestro rompecabezas!</h2>
+            <p>Completa el puzzle para acceder a nuestra página de aniversario</p>
+            <div class="puzzle-container" id="puzzle-container"></div>
+            <button onclick="checkPuzzle()">Comprobar solución</button>
+            <p id="puzzle-message" style="color: #ff3366; margin-top: 15px;"></p>
+        </div>
+    </div>
+    
+    <div class="container hidden-content" id="main-content">
+        <h1>Feliz Aniversario Mi Amor ❤️</h1>
+        
+        <div class="message">
+            <p>Hoy celebramos un año juntos, un año de risas, complicidad y amor infinito. Eres lo mejor que me ha pasado y quiero que sepas que cada día a tu lado es a un regalo.</p>
+        </div>
+        
+        <div class="countdown">
+            <h2>Nuestro tiempo juntos</h2>
+            <div class="countdown-numbers">
+                <div class="countdown-item">
+                    <div class="countdown-value" id="days">365</div>
+                    <div class="countdown-label">Días</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="hours">00</div>
+                    <div class="countdown-label">Horas</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="minutes">00</div>
+                    <div class="countdown-label">Minutos</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-value" id="seconds">00</div>
+                    <div class="countdown-label">Segundos</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="love-letter">
+            <h2>Mi carta para ti</h2>
+            <p>¡Holaa Amor! Te amo Nikol,</p>
+            <p>Desde que llegaste a mi vida, todo tiene más color. Recuerdo nuestra primera cita, nuestra primera conversación, nuestra primera risa... y desde entonces, no he dejado de sonreír.</p>
+            <p>En este año contigo he descubierto el verdadero significado del amor. Eres mi confidente, mi mejor amigo, mi persona favorita. Gracias por cada momento, por tu paciencia, por tu comprensión y por tu amor incondicional.</p>
+            <p>Espero que esta página sea solo el comienzo de muchos años más juntos. Te amo más de lo que las palabras pueden expresar.</p>
+            <p>Con todo mi amor,<br>Katherine Hernandez</p>
+        </div>
+        
+        <h2>Nuestros momentos especiales</h2>
+        <div class="photo-gallery">
+            <div class="photo-item"><img src="Imagenes/1.jpg" alt="Momento especial 1"></div>
+            <div class="photo-item"><img src="Imagenes/2.jpg" alt="Momento especial 2"></div>
+            <div class="photo-item"><img src="Imagenes/3.jpg" alt="Momento especial 3"></div>
+            <div class="photo-item"><img src="Imagenes/4.jpg" alt="Momento especial 4"></div>
+            <div class="photo-item"><img src="Imagenes/5.jpg" alt="Momento especial 5"></div>
+            <div class="photo-item"><img src="Imagenes/6.jpg" alt="Momento especial 6"></div>
+            <div class="photo-item"><img src="Imagenes/7.jpg" alt="Momento especial 7"></div>
+            <div class="photo-item"><img src="Imagenes/8.jpg" alt="Momento especial 8"></div>
+            <div class="photo-item"><img src="Imagenes/9.jpg" alt="Momento especial 9"></div>
+            <div class="photo-item"><img src="Imagenes/10.jpg" alt="Momento especial 10"></div>
+            <div class="photo-item"><img src="Imagenes/11.jpg" alt="Momento especial 11"></div>
+            <div class="photo-item"><img src="Imagenes/12.jpg" alt="Momento especial 12"></div>
+        </div>
+        
+        <div class="additional-content">
+            <h2>10 razones por las que te amo</h2>
+            <ol>
+                <li>Tu sonrisa ilumina mis días más oscuros</li>
+                <li>Tu sentido del humor siempre me hace reír</li>
+                <li>Tu apoyo incondicional en todos mis proyectos</li>
+                <li>Tu forma de entenderme sin necesidad de palabras</li>
+                <li>Tu bondad con los demás</li>
+                <li>Tu pasión por la vida</li>
+                <li>Tu manera de hacer que cada día sea especial</li>
+                <li>Tu paciencia con mis manías</li>
+                <li>Tu capacidad de sorprenderme constantemente</li>
+                <li>Simplemente por ser tú</li>
+            </ol>
+        </div>
+        
+        <div class="memory-game" id="memory-game">
+            <h2>Juego de Memoria</h2>
+            <p>Encuentra las parejas de cartas para descubrir mensajes especiales.</p>
+            <div class="memory-stats">
+                <div>Intentos: <span id="attempts">0</span></div>
+                <div>Pares encontrados: <span id="matches">0</span>/<span id="total-pairs">0</span></div>
+            </div>
+            <div class="memory-cards" id="memory-cards"></div>
+            <button onclick="resetMemoryGame()">Reiniciar Juego</button>
+        </div>
+        
+        <button onclick="showMemoryGame()">Juego: Memoria de nuestro amor</button>
+        <button onclick="showPuzzleAgain()">Volver a jugar al rompecabezas</button>
+    </div>
+
+    <script>
+        // Variable global para el estado del rompecabezas
+        let puzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0]; // 0 representa el espacio vacío
+        let isMusicPlaying = false;
+        let audioElement = document.getElementById('background-music');
+        
+        // Variables para el juego de memoria
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let attempts = 0;
+        let canFlip = true;
+
+        // Crear corazones flotantes
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            const heartCount = 30;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Posición aleatoria
+                heart.style.left = Math.random() * 100 + 'vw';
+                
+                // Tamaño aleatorio
+                const size = Math.random() * 20 + 10;
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+                
+                // Duración aleatoria de la animación
+                heart.style.animationDuration = Math.random() * 4 + 3 + 's';
+                
+                // Retraso aleatorio
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // Inicializar el rompecabezas
+        function initPuzzle() {
+            const puzzleContainer = document.getElementById('puzzle-container');
+            puzzleContainer.innerHTML = '';
+            
+            // Reiniciar estado del puzzle
+            puzzleState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+            
+            // Mezclar las piezas (excepto la última que es el espacio vacío)
+            for (let i = 0; i < 50; i++) {
+                const emptyIndex = puzzleState.indexOf(0);
+                const possibleMoves = getPossibleMoves(emptyIndex);
+                const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                
+                // Intercambiar
+                puzzleState[emptyIndex] = puzzleState[randomMove];
+                puzzleState[randomMove] = 0;
+            }
+            
+            // Crear las piezas en el contenedor
+            for (let i = 0; i < 9; i++) {
+                const pieceValue = puzzleState[i];
+                const puzzlePiece = document.createElement('div');
+                
+                if (pieceValue === 0) {
+                    puzzlePiece.classList.add('empty-piece');
+                    puzzlePiece.dataset.value = '0';
+                    puzzlePiece.dataset.index = i;
+                } else {
+                    puzzlePiece.classList.add('puzzle-piece');
+                    puzzlePiece.dataset.value = pieceValue;
+                    puzzlePiece.dataset.index = i;
+                    puzzlePiece.style.backgroundImage = 'url("yo.png")';
+                    puzzlePiece.style.backgroundPosition = getBackgroundPosition(pieceValue);
+                    
+                    puzzlePiece.addEventListener('click', () => movePiece(i));
+                }
+                
+                puzzleContainer.appendChild(puzzlePiece);
+            }
+        }
+        
+        // Obtener movimientos posibles para el espacio vacío
+        function getPossibleMoves(emptyIndex) {
+            const moves = [];
+            const row = Math.floor(emptyIndex / 3);
+            const col = emptyIndex % 3;
+            
+            // Arriba
+            if (row > 0) moves.push(emptyIndex - 3);
+            // Abajo
+            if (row < 2) moves.push(emptyIndex + 3);
+            // Izquierda
+            if (col > 0) moves.push(emptyIndex - 1);
+            // Derecha
+            if (col < 2) moves.push(emptyIndex + 1);
+            
+            return moves;
+        }
+        
+        // Obtener la posición de fondo para cada pieza
+        function getBackgroundPosition(piece) {
+            const positions = {
+                1: '0 0',
+                2: '-100px 0',
+                3: '-200px 0',
+                4: '0 -100px',
+                5: '-100px -100px',
+                6: '-200px -100px',
+                7: '0 -200px',
+                8: '-100px -200px'
+            };
+            
+            return positions[piece];
+        }
+        
+        // Mover pieza del puzzle
+        function movePiece(clickedIndex) {
+            const emptyIndex = puzzleState.indexOf(0);
+            
+            // Comprobar si la pieza clickeada es adyacente al espacio vacío
+            if (isAdjacent(emptyIndex, clickedIndex)) {
+                // Intercambiar valores en el estado
+                puzzleState[emptyIndex] = puzzleState[clickedIndex];
+                puzzleState[clickedIndex] = 0;
+                
+                // Actualizar la interfaz
+                updatePuzzleUI();
+            }
+        }
+        
+        // Actualizar la interfaz del puzzle
+        function updatePuzzleUI() {
+            const puzzleContainer = document.getElementById('puzzle-container');
+            puzzleContainer.innerHTML = '';
+            
+            for (let i = 0; i < 9; i++) {
+                const pieceValue = puzzleState[i];
+                const puzzlePiece = document.createElement('div');
+                
+                if (pieceValue === 0) {
+                    puzzlePiece.classList.add('empty-piece');
+                    puzzlePiece.dataset.value = '0';
+                    puzzlePiece.dataset.index = i;
+                } else {
+                    puzzlePiece.classList.add('puzzle-piece');
+                    puzzlePiece.dataset.value = pieceValue;
+                    puzzlePiece.dataset.index = i;
+                    puzzlePiece.style.backgroundImage = 'url("yo.png")';
+                    puzzlePiece.style.backgroundPosition = getBackgroundPosition(pieceValue);
+                    
+                    puzzlePiece.addEventListener('click', () => movePiece(i));
+                }
+                
+                puzzleContainer.appendChild(puzzlePiece);
+            }
+        }
+        
+        // Comprobar si dos índices son adyacentes en una cuadrícula 3x3
+        function isAdjacent(index1, index2) {
+            const row1 = Math.floor(index1 / 3);
+            const col1 = index1 % 3;
+            const row2 = Math.floor(index2 / 3);
+            const col2 = index2 % 3;
+            
+            return (
+                (Math.abs(row1 - row2) === 1 && col1 === col2) ||
+                (Math.abs(col1 - col2) === 1 && row1 === row2)
+            );
+        }
+        
+        // Comprobar si el puzzle está resuelto
+        function checkPuzzle() {
+            const solved = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+            let isSolved = true;
+            
+            for (let i = 0; i < puzzleState.length; i++) {
+                if (puzzleState[i] !== solved[i]) {
+                    isSolved = false;
+                    break;
+                }
+            }
+            
+            const message = document.getElementById('puzzle-message');
+            
+            if (isSolved) {
+                message.textContent = '¡Felicidades! Puzzle completado correctamente.';
+                setTimeout(() => {
+                    document.getElementById('puzzle-modal').style.display = 'none';
+                    document.getElementById('main-content').classList.remove('hidden-content');
+                    startCountdown();
+                    // Desplazar al inicio de la página principal
+                    window.scrollTo(0, 0);
+                    
+                    // Reproducir música automáticamente
+                    audioElement.play().then(() => {
+                        isMusicPlaying = true;
+                        updateMusicButton();
+                    }).catch(error => {
+                        console.log('La reproducción automática fue prevenida:', error);
+                    });
+                }, 1500);
+            } else {
+                message.textContent = 'Aún no está completo. ¡Sigue intentándolo!';
+            }
+        }
+        
+        // Iniciar contador de tiempo juntos
+        function startCountdown() {
+            // Fecha de inicio de la relación (hace un año)
+            const startDate = new Date();
+            startDate.setFullYear(startDate.getFullYear() - 1);
+            
+            function updateCountdown() {
+                const now = new Date();
+                const diff = now - startDate;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days;
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+        
+        // Mostrar juego de memoria
+        function showMemoryGame() {
+            const memoryGame = document.getElementById('memory-game');
+            if (memoryGame.style.display === 'block') {
+                memoryGame.style.display = 'none';
+            } else {
+                memoryGame.style.display = 'block';
+                initMemoryGame();
+                // Desplazar hasta el juego de memoria
+                memoryGame.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Inicializar juego de memoria
+        function initMemoryGame() {
+            const memoryContainer = document.getElementById('memory-cards');
+            memoryContainer.innerHTML = '';
+            
+            // Reiniciar variables del juego
+            flippedCards = [];
+            matchedPairs = 0;
+            attempts = 0;
+            canFlip = true;
+            
+            // Actualizar estadísticas
+            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('matches').textContent = matchedPairs;
+            
+            // Crear pares de cartas (3 pares = 6 cartas)
+            // Usar las mismas imágenes de la galería
+            const imagePairs = [
+                { id: 1, image: 'Imagenes/1.jpg' },
+                { id: 2, image: 'Imagenes/2.jpg' },
+                { id: 3, image: 'Imagenes/3.jpg' }
+            ];
+            
+            // Duplicar para crear pares
+            memoryCards = [];
+            imagePairs.forEach(pair => {
+                memoryCards.push({ id: pair.id, image: pair.image, matched: false });
+                memoryCards.push({ id: pair.id, image: pair.image, matched: false });
+            });
+            
+            // Mezclar las cartas
+            for (let i = memoryCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [memoryCards[i], memoryCards[j]] = [memoryCards[j], memoryCards[i]];
+            }
+            
+            // Crear las cartas en el DOM
+            memoryCards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('memory-card');
+                cardElement.dataset.index = index;
+                cardElement.dataset.id = card.id;
+                cardElement.innerHTML = '?';
+                
+                cardElement.addEventListener('click', () => flipCard(cardElement));
+                memoryContainer.appendChild(cardElement);
+            });
+            
+            document.getElementById('total-pairs').textContent = imagePairs.length;
+        }
+        
+        // Voltear carta en el juego de memoria
+        function flipCard(cardElement) {
+            // Si no se puede voltear o la carta ya está volteada o emparejada, salir
+            if (!canFlip || cardElement.classList.contains('flipped') || cardElement.classList.contains('matched')) {
+                return;
+            }
+            
+            // Voltear la carta
+            cardElement.classList.add('flipped');
+            const index = parseInt(cardElement.dataset.index);
+            cardElement.style.backgroundImage = `url('${memoryCards[index].image}')`;
+            cardElement.innerHTML = '';
+            
+            // Añadir a las cartas volteadas
+            flippedCards.push(cardElement);
+            
+            // Si tenemos 2 cartas volteadas, comprobar si son pareja
+            if (flippedCards.length === 2) {
+                canFlip = false;
+                attempts++;
+                document.getElementById('attempts').textContent = attempts;
+                
+                const card1 = flippedCards[0];
+                const card2 = flippedCards[1];
+                
+                if (card1.dataset.id === card2.dataset.id) {
+                    // Son pareja
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    memoryCards[parseInt(card1.dataset.index)].matched = true;
+                    memoryCards[parseInt(card2.dataset.index)].matched = true;
+                    
+                    matchedPairs++;
+                    document.getElementById('matches').textContent = matchedPairs;
+                    
+                    flippedCards = [];
+                    canFlip = true;
+                    
+                    // Comprobar si el juego está completo
+                    if (matchedPairs === memoryCards.length / 2) {
+                        setTimeout(() => {
+                            alert('¡Felicidades! Has completado el juego de memoria.');
+                        }, 500);
+                    }
+                } else {
+                    // No son pareja, voltear de nuevo después de un breve tiempo
+                    setTimeout(() => {
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        card1.style.backgroundImage = '';
+                        card2.style.backgroundImage = '';
+                        card1.innerHTML = '?';
+                        card2.innerHTML = '?';
+                        
+                        flippedCards = [];
+                        canFlip = true;
+                    }, 1000);
+                }
+            }
+        }
+        
+        // Reiniciar juego de memoria
+        function resetMemoryGame() {
+            initMemoryGame();
+        }
+        
+        // Mostrar el puzzle nuevamente
+        function showPuzzleAgain() {
+            document.getElementById('puzzle-modal').style.display = 'flex';
+            document.getElementById('main-content').classList.add('hidden-content');
+            initPuzzle();
+        }
+        
+        // Controlar música de fondo
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                audioElement.pause();
+            } else {
+                audioElement.play();
+            }
+            
+            isMusicPlaying = !isMusicPlaying;
+            updateMusicButton();
+        }
+        
+        // Actualizar el botón de música
+        function updateMusicButton() {
+            const button = document.querySelector('.music-btn');
+            if (isMusicPlaying) {
+                button.innerHTML = '♪';
+                button.style.backgroundColor = '#ff3366';
+            } else {
+                button.innerHTML = '♪';
+                button.style.backgroundColor = '#ccc';
+            }
+        }
+        
+        // Inicializar la página
+        window.onload = function() {
+            createHearts();
+            initPuzzle();
+            document.getElementById('puzzle-modal').style.display = 'flex';
+        };
+    </script>
+</body>
+</html>
